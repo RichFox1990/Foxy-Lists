@@ -20,7 +20,6 @@ const ToggleSwitch = ({
                 style={styles.switch}
                 trackColor={{ false: offColors.track, true: onColors.track }}
                 thumbColor={value ? onColors.thumb : offColors.thumb}
-                ios_backgroundColor="#3e3e3e"
                 onValueChange={onToggle}
                 value={value}
             />
@@ -40,9 +39,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     icon: {
-        marginRight: 5,
-    },
-    switch: {
         marginRight: 5,
     },
 });

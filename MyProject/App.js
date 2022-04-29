@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import Header from './components/Header';
 import List from './components/List';
-import AddItem from './components/AddItem';
+import AddItemContainer from './components/AddItemContainer';
 import { AppContext } from './components/DataStore/utils/appContext';
 import ToggleSwitch from './components/ToggleSwitch';
 
@@ -91,7 +91,7 @@ const App = () => {
                             style={styles.img}
                         />
                     </View>
-                    <AddItem onAdd={handleAdd} />
+                    <AddItemContainer onAdd={handleAdd} />
                     <List />
                 </View>
             </TouchableWithoutFeedback>
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     toggle: {
         position: 'absolute',
         right: 0,
-        bottom: 0,
+        top: 0,
     },
 });
 
