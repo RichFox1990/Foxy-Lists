@@ -1,105 +1,124 @@
-import React, { useState, useEffect } from 'react';
-import uuid from 'react-native-uuid';
+import React, { useEffect, useContext } from 'react';
 import {
-  StyleSheet,
-  Image,
-  View,
-  FlatList,
-  SafeAreaView,
-  TouchableWithoutFeedback,
-  Keyboard,
+    StyleSheet,
+    Image,
+    View,
+    SafeAreaView,
+    TouchableWithoutFeedback,
+    Keyboard,
 } from 'react-native';
 import Header from './components/Header';
-import ListItem from './components/ListItem';
+import List from './components/List';
 import AddItem from './components/AddItem';
-import LocalStore from './components/DataStore/LocalStore';
-// import CloudStore from './components/DataStore/CloudStore';
+import { AppContext } from './components/DataStore/utils/appContext';
+import ToggleSwitch from './components/ToggleSwitch';
 
-const dataStore = new LocalStore();
 const App = () => {
-  const [items, setItems] = useState([]);
+    const {
+        dataStore,
+        items,
+        setItems,
+        title,
+        setTitle,
+        path,
+        userId,
+        getData,
+        setGetData,
+        syncData,
+        setSyncData,
+        handleAdd,
+        toggleCloudSyncSwitch,
+        isCloudSyncEnabled,
+    } = useContext(AppContext);
 
-  useEffect(() => {
-    console.log('kappa');
-    const getTheData = async () => {
-      // console.log(await dataStore.getAllData());
-      // await dataStore.removeItem('dave')
-      const theData = await dataStore.getData('shopping');
-      console.log('theData', theData);
-      setItems(theData || []);
-    };
-    getTheData();
-  }, []);
+    useEffect(() => {
+        const fetchUserData = async () => {
+            setTitle('loading...');
+            const theData = await dataStore.getData(path, userId);
+            setTitle('Shopping List');
+            setItems(theData || []);
+        };
+        if (getData) {
+            fetchUserData();
+            setGetData(false);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [getData]);
 
-  useEffect(() => {
-    const storeTheData = async () => {
-      await dataStore.storeData('shopping', items);
-      console.log('items', items);
-    };
-    if (items !== null) {
-      storeTheData();
-    }
-  }, [items]);
+    // useEffect(() => {
+    //     console.log('current items', items);
+    // }, [items]);
 
-  const handleDelete = async (id) => {
-    setItems((prevItems) => {
-      return prevItems.filter((item) => item.id !== id);
-    });
-  };
+    useEffect(() => {
+        if (isCloudSyncEnabled) {
+            console.log('||--- Enabling CloudSync ---||');
+            setSyncData(true);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isCloudSyncEnabled]);
 
-  const handleToggleComplete = async (id) => {
-    setItems((prevItems) => {
-      return prevItems.map((item) =>
-        item.id === id ? { ...item, done: !item.done } : item,
-      );
-    });
-  };
+    useEffect(() => {
+        const storeTheData = async (saveInCloud) => {
+            await dataStore.storeData(path, userId, items, saveInCloud);
+            console.log('items', items);
+        };
+        if (syncData) {
+            storeTheData(isCloudSyncEnabled);
+            setSyncData(false);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [syncData]);
 
-  const handleAdd = async (name) => {
-    setItems((prevItems) => {
-      return [...prevItems, { name, id: uuid.v4(), done: false }];
-    });
-  };
-
-  return (
-    <SafeAreaView style={styles.flex}>
-      <TouchableWithoutFeedback
-        style={styles.flex}
-        onPress={() => Keyboard.dismiss()}>
-        <View style={styles.flex}>
-          <Header title="Shopping List" />
-          <View style={styles.viewContainer}>
-            <Image source={require('./img/fox.png')} style={styles.img} />
-          </View>
-          <AddItem onAdd={handleAdd} />
-          <FlatList
-            data={items}
-            renderItem={({ item }) => (
-              <ListItem
-                item={item}
-                onDelete={handleDelete}
-                toggleComplete={handleToggleComplete}
-              />
-            )}
-          />
-        </View>
-      </TouchableWithoutFeedback>
-    </SafeAreaView>
-  );
+    return (
+        <SafeAreaView style={styles.flex}>
+            <TouchableWithoutFeedback
+                style={styles.flex}
+                onPress={() => Keyboard.dismiss()}>
+                <View style={styles.flex}>
+                    <Header title={title} />
+                    <View style={styles.viewContainer}>
+                        <ToggleSwitch
+                            style={styles.toggle}
+                            onColors={{ track: '#f5c6b0', thumb: '#f57b42' }}
+                            offColors={{ track: '#767577', thumb: '#f5c6b0' }}
+                            iconOn="cloud-upload-outline"
+                            iconOff="cloud-offline-outline"
+                            onToggle={toggleCloudSyncSwitch}
+                            value={isCloudSyncEnabled}
+                        />
+                        <Image
+                            source={require('./img/fox.png')}
+                            style={styles.img}
+                        />
+                    </View>
+                    <AddItem onAdd={handleAdd} />
+                    <List />
+                </View>
+            </TouchableWithoutFeedback>
+        </SafeAreaView>
+    );
 };
 
 const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  viewContainer: {
-    padding: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  viewText: { color: 'crimson', fontSize: 30 },
-  img: { width: 75, height: 75, borderRadius: 100 / 2 },
+    flex: {
+        flex: 1,
+        backgroundColor: 'white',
+    },
+    viewContainer: {
+        padding: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    viewText: { color: 'crimson', fontSize: 30 },
+    img: { width: 75, height: 75, borderRadius: 100 / 2 },
+    loader: {
+        padding: 10,
+    },
+    toggle: {
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+    },
 });
 
 export default App;
