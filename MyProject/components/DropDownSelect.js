@@ -1,22 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { AppContext } from './DataStore/utils/appContext';
 
-const data = [
-    { label: 'Item 1', value: '1' },
-    { label: 'Item 2', value: '2' },
-    { label: 'Item 3', value: '3' },
-    { label: 'Item 4', value: '4' },
-    { label: 'Item 5', value: '5' },
-    { label: 'Item 6', value: '6' },
-    { label: 'Item 7', value: '7' },
-    { label: 'Item 8', value: '8' },
-];
-
-const DropDownSelect = () => {
-    const [value, setValue] = useState(null);
+const DropDownSelect = ({ data }) => {
     const [isFocused, setIsFocused] = useState(false);
+    const { selectedCategory, setSelectedCategory } = useContext(AppContext);
 
     return (
         <Dropdown
@@ -35,18 +25,20 @@ const DropDownSelect = () => {
             valueField="value"
             placeholder="Select Group"
             searchPlaceholder="Search..."
-            value={value}
+            value={selectedCategory?.value}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             onChange={(item) => {
-                setValue(item.value);
+                item.value === selectedCategory?.value
+                    ? setSelectedCategory(null)
+                    : setSelectedCategory(item);
             }}
             renderRightIcon={() => (
                 <FontAwesome5
                     style={styles.icon}
                     color={isFocused ? '#f57b42' : '#de855d'}
                     name="layer-group"
-                    size={25}
+                    size={20}
                 />
             )}
         />
@@ -79,7 +71,7 @@ const styles = StyleSheet.create({
         color: 'grey',
     },
     selectedTextStyle: {
-        fontSize: 12,
+        fontSize: 14,
         textAlign: 'center',
         color: 'black',
     },

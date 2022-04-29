@@ -1,4 +1,4 @@
-import React, { createContext, useMemo, useState } from 'react';
+import React, { createContext, useMemo, useState, useCallback } from 'react';
 import DataStore from '../DataStore';
 import uuid from 'react-native-uuid';
 
@@ -8,6 +8,11 @@ export const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
     const [items, setItems] = useState(null);
+    const [categories, setCategories] = useState([
+        { label: 'Important', value: 1 },
+        { label: 'Other', value: 2 },
+    ]);
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [dataStore, setDataStore] = useState(store);
     const [path, setPath] = useState('/shopping-list');
     const [userId, setUserId] = useState('0');
@@ -16,28 +21,61 @@ export const AppContextProvider = ({ children }) => {
     const [title, setTitle] = useState('Shopping List');
     const [isCloudSyncEnabled, setIsCloudSyncEnabled] = useState(false);
 
-    const handleDelete = async (id) => {
-        setItems((prevItems) => {
-            return prevItems.filter((item) => item.id !== id);
-        });
-        setSyncData(true);
+    const getCategory = () => {
+        return selectedCategory ? selectedCategory.label : 'Unassigned';
     };
 
-    const handleToggleComplete = async (id) => {
-        setItems((prevItems) => {
-            return prevItems.map((item) =>
-                item.id === id ? { ...item, done: !item.done } : item,
-            );
-        });
-        setSyncData(true);
-    };
+    const handleDelete = useCallback(
+        async (id) => {
+            const category = getCategory();
 
-    const handleAdd = async (name) => {
-        setItems((prevItems) => {
-            return [...prevItems, { name, id: uuid.v4(), done: false }];
-        });
-        setSyncData(true);
-    };
+            setItems((prevItems) => {
+                return {
+                    ...prevItems,
+                    [category]: prevItems[category].filter(
+                        (item) => item.id !== id,
+                    ),
+                };
+            });
+            setSyncData(true);
+        }, // eslint-disable-next-line react-hooks/exhaustive-deps
+        [selectedCategory],
+    );
+
+    const handleToggleComplete = useCallback(
+        async (id) => {
+            const category = getCategory();
+
+            setItems((prevItems) => {
+                return {
+                    ...prevItems,
+                    [category]: prevItems[category].map((item) =>
+                        item.id === id ? { ...item, done: !item.done } : item,
+                    ),
+                };
+            });
+            setSyncData(true);
+        }, // eslint-disable-next-line react-hooks/exhaustive-deps
+        [selectedCategory],
+    );
+
+    const handleAdd = useCallback(
+        async (name) => {
+            const category = getCategory();
+            setItems((prevItems) => {
+                return {
+                    ...prevItems,
+                    [category]: [
+                        ...(prevItems[category] && prevItems[category]),
+                        { name, id: uuid.v4(), done: false },
+                    ],
+                };
+            });
+            setSyncData(true);
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [selectedCategory],
+    );
 
     const toggleCloudSyncSwitch = () =>
         setIsCloudSyncEnabled((previousState) => !previousState);
@@ -50,6 +88,10 @@ export const AppContextProvider = ({ children }) => {
             toggleCloudSyncSwitch,
             items,
             setItems,
+            categories,
+            setCategories,
+            selectedCategory,
+            setSelectedCategory,
             dataStore,
             setDataStore,
             path,
@@ -73,6 +115,11 @@ export const AppContextProvider = ({ children }) => {
             getData,
             title,
             isCloudSyncEnabled,
+            categories,
+            selectedCategory,
+            handleAdd,
+            handleDelete,
+            handleToggleComplete,
         ],
     );
 

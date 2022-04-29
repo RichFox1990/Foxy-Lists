@@ -36,7 +36,7 @@ const App = () => {
             setTitle('loading...');
             const theData = await dataStore.getData(path, userId);
             setTitle('Shopping List');
-            setItems(theData || []);
+            setItems(Object.keys(theData).length ? theData : {});
         };
         if (getData) {
             fetchUserData();

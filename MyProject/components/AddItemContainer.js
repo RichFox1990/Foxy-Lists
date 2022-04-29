@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
     StyleSheet,
     TextInput,
@@ -8,8 +8,10 @@ import {
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
 import DropDownSelect from './DropDownSelect';
+import { AppContext } from './DataStore/utils/appContext';
 
 const AddItemContainer = ({ onAdd }) => {
+    const { categories } = useContext(AppContext);
     const [text, setText] = useState('');
     const [isTextFocused, setIsTextFocused] = useState(false);
 
@@ -48,7 +50,7 @@ const AddItemContainer = ({ onAdd }) => {
                         </View>
                     )}
                 </View>
-                <DropDownSelect />
+                <DropDownSelect data={categories} />
                 {/* make this reusable */}
             </View>
             <View style={styles.buttonContainer}>
