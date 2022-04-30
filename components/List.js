@@ -2,7 +2,6 @@ import ListItem from './ListItem';
 import React from 'react';
 import {
     FlatList,
-    StyleSheet,
 } from 'react-native';
 
 

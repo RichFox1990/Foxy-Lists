@@ -51,7 +51,7 @@ export const ListContainer = () => {
     const { items } =
         useContext(AppContext);
     return items ? (
-        <RecursiveCategoryLists items={items} />
+            <RecursiveCategoryLists items={items} />
     ) : (
         <ActivityIndicator style={styles.loader} size="large" color="#f57b42" />
     );

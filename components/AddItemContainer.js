@@ -89,14 +89,14 @@ const styles = StyleSheet.create({
     },
     buttonContainer: { flexDirection: 'row' },
     addButtonContainer: {
-        borderRadius: 50,
-
+        // borderRadius: 50,
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#f57b42',
-        margin: 5,
+        marginVertical: 5,
+        marginBottom: 10,
         paddingVertical: 10,
     },
     buttonText: {

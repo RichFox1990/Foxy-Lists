@@ -1,25 +1,21 @@
 import React, { useContext, useMemo } from 'react';
-import { Text, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Text, StyleSheet, TouchableOpacity, View, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import { AppContext } from './DataStore/utils/appContext';
+import DropDownSelect from './DropDownSelect';
 
 const ListItem = ({ item, renderHeaderText, categoryName }) => {
-    const textStyles = {
-        ...styles.listItemText,
-        ...(item.done && styles.itemDone),
-    };
-    const opacity = {
-        opacity: item.done ? 0.5 : 1,
-    };
-    const { handleDelete, handleToggleComplete } =
+    const { handleDelete, handleToggleComplete, categories } =
         useContext(AppContext);
 
-    return (
+    return (<>
+        {renderHeaderText && <TouchableWithoutFeedback><Text style={styles.header}>{categoryName}</Text></TouchableWithoutFeedback>}
         <TouchableOpacity style={styles.itemContainer}>
-            {renderHeaderText && <Text>{categoryName}</Text>}
-            <View style={{ ...styles.listItemView, ...opacity }}>
-                <Text style={textStyles}>{item.name}</Text>
+            <View style={[styles.listItemView, (item.done && styles.opacity)]}>
+                <Text style={[styles.listItemText, (item.done && styles.itemDone)]}>{item.name}</Text>
+                    {/* <DropDownSelect data={categories} /> */}
                 <View style={styles.iconContainer}>
+
                     <Icon
                         style={styles.icon}
                         name={item.done ? 'check-circle' : 'check-circle-o'}
@@ -36,17 +32,26 @@ const ListItem = ({ item, renderHeaderText, categoryName }) => {
                     />
                 </View>
             </View>
-        </TouchableOpacity>
+        </TouchableOpacity ></>
+
     );
 };
 
 const styles = StyleSheet.create({
     itemContainer: {
-        padding: 15,
+        padding: 10,
         backgroundColor: '#f8f8f8',
         borderBottomWidth: 1,
         borderColor: '#eee',
-        marginHorizontal: 5,
+    },
+    header: {
+        padding: 2,
+        backgroundColor: '#f7dbcd',
+        // borderWidth: 1,
+        // borderColor: 'grey',
+        textAlign: 'center',
+        color: 'black',
+
     },
     iconContainer: {
         flexDirection: 'row',
@@ -63,12 +68,17 @@ const styles = StyleSheet.create({
         color: 'grey',
         maxWidth: '80%',
         fontSize: 18,
+        flexGrow: 1,
         textTransform: 'capitalize',
+        wordBreak: 'break-all',
     },
     itemDone: {
         textDecorationLine: 'line-through',
-        opacity: 0.6,
+        opacity: 0.5,
     },
+    opacity: {
+        opacity: 0.5,
+    }
 });
 
 export default ListItem;

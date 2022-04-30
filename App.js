@@ -92,7 +92,7 @@ const App = () => {
                         />
                     </View>
                     <AddItemContainer onAdd={handleAdd} />
-                    <ListContainer />
+                    <ListContainer style={styles.listContainer} />
                 </View>
             </TouchableWithoutFeedback>
         </SafeAreaView>
