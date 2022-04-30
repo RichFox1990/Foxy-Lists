@@ -41,7 +41,6 @@ const ListContainer = () => {
     // map over each category and its data use ListFooterComponent to nest the next one over and over
     const { items, handleDelete, handleToggleComplete } =
         useContext(AppContext);
-    console.log('itemsssss', items);
     return items ? (
         <SafeAreaView>
             <List
