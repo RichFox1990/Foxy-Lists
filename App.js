@@ -8,7 +8,7 @@ import {
     Keyboard,
 } from 'react-native';
 import Header from './components/Header';
-import List from './components/List';
+import { ListContainer } from './components/ListContainer';
 import AddItemContainer from './components/AddItemContainer';
 import { AppContext } from './components/DataStore/utils/appContext';
 import ToggleSwitch from './components/ToggleSwitch';
@@ -36,7 +36,7 @@ const App = () => {
             setTitle('loading...');
             const theData = await dataStore.getData(path, userId);
             setTitle('Shopping List');
-            setItems(Object.keys(theData).length ? theData : {});
+            setItems(theData && Object.keys(theData).length ? theData : {});
         };
         if (getData) {
             fetchUserData();
@@ -92,7 +92,7 @@ const App = () => {
                         />
                     </View>
                     <AddItemContainer onAdd={handleAdd} />
-                    <List />
+                    <ListContainer />
                 </View>
             </TouchableWithoutFeedback>
         </SafeAreaView>

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext, useMemo } from 'react';
 import { Text, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
+import { AppContext } from './DataStore/utils/appContext';
 
-const ListItem = ({ item, onDelete, toggleComplete }) => {
+const ListItem = ({ item, renderHeaderText, categoryName }) => {
     const textStyles = {
         ...styles.listItemText,
         ...(item.done && styles.itemDone),
@@ -10,9 +11,12 @@ const ListItem = ({ item, onDelete, toggleComplete }) => {
     const opacity = {
         opacity: item.done ? 0.5 : 1,
     };
+    const { handleDelete, handleToggleComplete } =
+        useContext(AppContext);
 
     return (
         <TouchableOpacity style={styles.itemContainer}>
+            {renderHeaderText && <Text>{categoryName}</Text>}
             <View style={{ ...styles.listItemView, ...opacity }}>
                 <Text style={textStyles}>{item.name}</Text>
                 <View style={styles.iconContainer}>
@@ -21,14 +25,14 @@ const ListItem = ({ item, onDelete, toggleComplete }) => {
                         name={item.done ? 'check-circle' : 'check-circle-o'}
                         size={25}
                         color="green"
-                        onPress={() => toggleComplete(item.id)}
+                        onPress={() => handleToggleComplete(item.id, categoryName)}
                     />
                     <Icon
                         style={styles.icon}
                         name="remove"
                         size={25}
                         color="firebrick"
-                        onPress={() => onDelete(item.id)}
+                        onPress={() => handleDelete(item.id, categoryName)}
                     />
                 </View>
             </View>
