@@ -5,13 +5,19 @@ import lodash from 'lodash';
 import { StyleSheet, ActivityIndicator } from 'react-native';
 import { AppContext } from './DataStore/utils/appContext';
 
-const RecursiveCategoryLists = ({ items }) => {
+const RecursiveCategoryLists = ({ items, isFirst }) => {
     const categories = Reflect.ownKeys(items);
     const categoryCount = categories.length;
     const currentCategory = categories[0];
 
     const SingleList = ({ category }) => {
-        return <List categoryName={category} categoryItems={items[category]} />;
+        return (
+            <List
+                categoryName={category}
+                categoryItems={items[category]}
+                isFirst={isFirst}
+            />
+        );
     };
 
     const ListWithFooter = ({ category }) => {
@@ -23,6 +29,7 @@ const RecursiveCategoryLists = ({ items }) => {
             <List
                 categoryName={category}
                 categoryItems={categoryToRender}
+                isFirst={isFirst}
                 ListFooterComponent={
                     <RecursiveCategoryLists items={newItems} />
                 }
@@ -40,7 +47,7 @@ const RecursiveCategoryLists = ({ items }) => {
 export const ListContainer = () => {
     const { items } = useContext(AppContext);
     return items ? (
-        <RecursiveCategoryLists items={items} />
+        <RecursiveCategoryLists items={items} isFirst={true} />
     ) : (
         <ActivityIndicator style={styles.loader} size="large" color="#f57b42" />
     );

@@ -8,11 +8,11 @@ import {
     Keyboard,
 } from 'react-native';
 import Header from './components/Header';
-import { ListContainer } from './components/ListContainer';
 import AddItemContainer from './components/AddItemContainer';
 import { AppContext } from './components/DataStore/utils/appContext';
 import ToggleSwitch from './components/ToggleSwitch';
 import EditItemModal from './components/EditItemModal';
+import { List } from './components//List';
 
 const App = () => {
     const {
@@ -95,7 +95,7 @@ const App = () => {
                     </View>
                     <AddItemContainer onAdd={handleAdd} />
                     {itemToEdit && <EditItemModal item={itemToEdit} />}
-                    <ListContainer style={styles.listContainer} />
+                    <List />
                 </View>
             </TouchableWithoutFeedback>
         </SafeAreaView>

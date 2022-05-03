@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { StyleSheet, TextInput, Text, View, Modal } from 'react-native';
+import React, { useContext } from 'react';
+import { StyleSheet, Text, View, Modal } from 'react-native';
 import { AppContext } from './DataStore/utils/appContext';
 import DropDownSelect from './DropDownSelect';
 
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f8f8f8',
         elevation: 20,
-        // borderRadius: 25,
+        borderRadius: 25,
         borderColor: '#f57b42',
         borderWidth: 2,
     },

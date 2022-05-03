@@ -11,6 +11,10 @@ export const AppContextProvider = ({ children }) => {
     const [items, setItems] = useState(null);
     const [categories, setCategories] = useState([
         { label: 'Important', value: 1 },
+        { label: 'Urgent', value: 1 },
+        { label: 'Primary', value: 1 },
+        { label: 'Secondary', value: 1 },
+        { label: 'Notes', value: 1 },
         { label: 'Other', value: 2 },
     ]);
     const [selectedCategory, setSelectedCategory] = useState(null);
