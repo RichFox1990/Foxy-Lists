@@ -1,39 +1,65 @@
-import React, { useContext, useMemo } from 'react';
-import { Text, StyleSheet, TouchableOpacity, View, TouchableWithoutFeedback } from 'react-native';
+import React, { useContext, useState } from 'react';
+import {
+    Text,
+    StyleSheet,
+    Pressable,
+    View,
+    TouchableWithoutFeedback,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import { AppContext } from './DataStore/utils/appContext';
-import DropDownSelect from './DropDownSelect';
 
 const ListItem = ({ item, renderHeaderText, categoryName }) => {
-    const { handleDelete, handleToggleComplete, categories } =
+    const { handleDelete, handleToggleComplete, setItemToEdit } =
         useContext(AppContext);
-
-    return (<>
-        {renderHeaderText && <TouchableWithoutFeedback><Text style={styles.header}>{categoryName}</Text></TouchableWithoutFeedback>}
-        <TouchableOpacity style={styles.itemContainer}>
-            <View style={[styles.listItemView, (item.done && styles.opacity)]}>
-                <Text style={[styles.listItemText, (item.done && styles.itemDone)]}>{item.name}</Text>
-                    {/* <DropDownSelect data={categories} /> */}
-                <View style={styles.iconContainer}>
-
-                    <Icon
-                        style={styles.icon}
-                        name={item.done ? 'check-circle' : 'check-circle-o'}
-                        size={25}
-                        color="green"
-                        onPress={() => handleToggleComplete(item.id, categoryName)}
-                    />
-                    <Icon
-                        style={styles.icon}
-                        name="remove"
-                        size={25}
-                        color="firebrick"
-                        onPress={() => handleDelete(item.id, categoryName)}
-                    />
+    const [isPressed, setIsPressed] = useState(false);
+    const [isLongPress, setIsLongPress] = useState(false);
+    return (
+        <>
+            {renderHeaderText && (
+                <TouchableWithoutFeedback>
+                    <Text style={styles.header}>{categoryName}</Text>
+                </TouchableWithoutFeedback>
+            )}
+            <Pressable
+                style={[styles.itemContainer, isPressed && styles.pressed]}
+                onLongPress={() => setIsLongPress(true)}
+                onPressIn={() => setIsPressed(true)}
+                onPressOut={() => {
+                    setItemToEdit(isLongPress ? item : false);
+                    setIsPressed(false);
+                    setIsLongPress(false);
+                }}>
+                <View
+                    style={[styles.listItemView, item.done && styles.opacity]}>
+                    <Text
+                        style={[
+                            styles.listItemText,
+                            item.done && styles.itemDone,
+                        ]}>
+                        {item.name}
+                    </Text>
+                    <View style={styles.iconContainer}>
+                        <Icon
+                            style={styles.icon}
+                            name={item.done ? 'check-circle' : 'check-circle-o'}
+                            size={25}
+                            color="green"
+                            onPress={() =>
+                                handleToggleComplete(item.id, categoryName)
+                            }
+                        />
+                        <Icon
+                            style={styles.icon}
+                            name="remove"
+                            size={25}
+                            color="firebrick"
+                            onPress={() => handleDelete(item.id, categoryName)}
+                        />
+                    </View>
                 </View>
-            </View>
-        </TouchableOpacity ></>
-
+            </Pressable>
+        </>
     );
 };
 
@@ -51,7 +77,6 @@ const styles = StyleSheet.create({
         // borderColor: 'grey',
         textAlign: 'center',
         color: 'black',
-
     },
     iconContainer: {
         flexDirection: 'row',
@@ -70,7 +95,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         flexGrow: 1,
         textTransform: 'capitalize',
-        wordBreak: 'break-all',
     },
     itemDone: {
         textDecorationLine: 'line-through',
@@ -78,7 +102,11 @@ const styles = StyleSheet.create({
     },
     opacity: {
         opacity: 0.5,
-    }
+    },
+    pressed: {
+        opacity: 0.5,
+        backgroundColor: '#f0efd5',
+    },
 });
 
 export default ListItem;

@@ -12,6 +12,7 @@ import { ListContainer } from './components/ListContainer';
 import AddItemContainer from './components/AddItemContainer';
 import { AppContext } from './components/DataStore/utils/appContext';
 import ToggleSwitch from './components/ToggleSwitch';
+import EditItemModal from './components/EditItemModal';
 
 const App = () => {
     const {
@@ -29,13 +30,14 @@ const App = () => {
         handleAdd,
         toggleCloudSyncSwitch,
         isCloudSyncEnabled,
+        itemToEdit,
     } = useContext(AppContext);
 
     useEffect(() => {
         const fetchUserData = async () => {
             setTitle('loading...');
             const theData = await dataStore.getData(path, userId);
-            setTitle('Shopping List');
+            setTitle('Foxy Lists');
             setItems(theData && Object.keys(theData).length ? theData : {});
         };
         if (getData) {
@@ -92,6 +94,7 @@ const App = () => {
                         />
                     </View>
                     <AddItemContainer onAdd={handleAdd} />
+                    {itemToEdit && <EditItemModal item={itemToEdit} />}
                     <ListContainer style={styles.listContainer} />
                 </View>
             </TouchableWithoutFeedback>

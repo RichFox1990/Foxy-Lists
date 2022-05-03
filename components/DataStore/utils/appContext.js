@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { createContext, useMemo, useState, useCallback } from 'react';
 import DataStore from '../DataStore';
 import uuid from 'react-native-uuid';
@@ -18,6 +19,7 @@ export const AppContextProvider = ({ children }) => {
     const [userId, setUserId] = useState('fds');
     const [syncData, setSyncData] = useState(false);
     const [getData, setGetData] = useState(true);
+    const [itemToEdit, setItemToEdit] = useState(false);
     const [title, setTitle] = useState('Shopping List');
     const [isCloudSyncEnabled, setIsCloudSyncEnabled] = useState(false);
 
@@ -26,8 +28,8 @@ export const AppContextProvider = ({ children }) => {
     };
 
     const handleDelete = async (id, categoryName) => {
-        const category = getCategoryName(categoryName)
-        console.log("DELETING--", category, id)
+        const category = getCategoryName(categoryName);
+        console.log('DELETING--', category, id);
         setItems((prevItems) => {
             return {
                 ...prevItems,
@@ -37,11 +39,11 @@ export const AppContextProvider = ({ children }) => {
             };
         });
         setSyncData(true);
-    }
+    };
 
     const handleToggleComplete = async (id, categoryName) => {
-        const category = getCategoryName(categoryName)
-        console.log("TOGGLING", category, id)
+        const category = getCategoryName(categoryName);
+        console.log('TOGGLING', category, id);
 
         setItems((prevItems) => {
             return {
@@ -52,22 +54,22 @@ export const AppContextProvider = ({ children }) => {
             };
         });
         setSyncData(true);
-    }
+    };
 
     const handleAdd = async (name) => {
-        const category = getCategoryName(selectedCategory?.label)
-        console.log("ADDING--", category, name)
+        const category = getCategoryName(selectedCategory?.label);
+        console.log('ADDING--', category, name);
         setItems((prevItems) => {
             return {
                 ...prevItems,
                 [category]: [
-                    ...(Boolean(prevItems[category]) ? prevItems[category] : []),
+                    ...(prevItems[category] ? prevItems[category] : []),
                     { name, id: uuid.v4(), done: false },
                 ],
             };
         });
         setSyncData(true);
-    }
+    };
 
     const toggleCloudSyncSwitch = () =>
         setIsCloudSyncEnabled((previousState) => !previousState);
@@ -94,6 +96,8 @@ export const AppContextProvider = ({ children }) => {
             setSyncData,
             getData,
             setGetData,
+            itemToEdit,
+            setItemToEdit,
             title,
             setTitle,
             isCloudSyncEnabled,
@@ -105,6 +109,7 @@ export const AppContextProvider = ({ children }) => {
             userId,
             syncData,
             getData,
+            itemToEdit,
             title,
             isCloudSyncEnabled,
             categories,
