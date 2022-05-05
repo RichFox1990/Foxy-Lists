@@ -1,54 +1,83 @@
 import React, { useContext, useState } from 'react';
 import { Text, StyleSheet, Pressable, View } from 'react-native';
-import Icon from 'react-native-vector-icons/dist/FontAwesome';
+import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
+import Entypo from 'react-native-vector-icons/dist/Entypo';
 import { AppContext } from './DataStore/utils/appContext';
+import { ConfirmDeleteModal } from './Modal/ConfirmDeleteModal';
 
 const ListItem = ({ item }) => {
     const { handleDelete, handleToggleComplete, setItemToEdit } =
         useContext(AppContext);
 
     const [isPressed, setIsPressed] = useState(false);
-    const [isLongPress, setIsLongPress] = useState(false);
+    const [deleteModalActive, setDeleteModalActive] = useState(false);
 
     const onToggleComplete = () => {
         handleToggleComplete(item.id, item.category);
     };
-    const onDelete = () => {
+    const onClickDelete = () => {
+        if (item.done) {
+            handleDelete(item.id, item.category);
+        } else {
+            setDeleteModalActive(true);
+        }
+    };
+    const onDeleteConfirm = () => {
+        setDeleteModalActive(false);
         handleDelete(item.id, item.category);
     };
+
+    const onLongPress = () => {
+        setItemToEdit(item);
+    };
+
     return (
-        <Pressable
-            style={[styles.itemContainer, isPressed && styles.pressed]}
-            onLongPress={() => setIsLongPress(true)}
-            onPressIn={() => setIsPressed(true)}
-            onPressOut={() => {
-                setItemToEdit(isLongPress ? item : false);
-                setIsPressed(false);
-                setIsLongPress(false);
-            }}>
-            <View style={[styles.listItemView, item.done && styles.opacity]}>
-                <Text
-                    style={[styles.listItemText, item.done && styles.itemDone]}>
-                    {item.name}
-                </Text>
-                <View style={styles.iconContainer}>
-                    <Icon
-                        style={styles.icon}
-                        name={item.done ? 'check-circle' : 'check-circle-o'}
-                        size={25}
-                        color="green"
-                        onPress={onToggleComplete}
-                    />
-                    <Icon
-                        style={styles.icon}
-                        name="remove"
-                        size={25}
-                        color="firebrick"
-                        onPress={onDelete}
-                    />
+        <>
+            <Pressable
+                style={[
+                    styles.itemContainer,
+                    isPressed && styles.pressed,
+                    item.done && { backgroundColor: 'rgba(66, 163, 5,0.1)' },
+                ]}
+                onLongPress={onLongPress}
+                onPressIn={() => setIsPressed(true)}
+                onPressOut={() => {
+                    setIsPressed(false);
+                }}>
+                <View
+                    style={[styles.listItemView, item.done && styles.opacity]}>
+                    <Text
+                        style={[
+                            styles.listItemText,
+                            item.done && styles.itemDone,
+                        ]}>
+                        {item.name}
+                    </Text>
+                    <View style={styles.iconContainer}>
+                        <FontAwesome
+                            style={styles.icon}
+                            name={item.done ? 'check-circle' : 'check-circle-o'}
+                            size={25}
+                            color="green"
+                            onPress={onToggleComplete}
+                        />
+                        <Entypo
+                            style={styles.icon}
+                            name="circle-with-cross"
+                            size={25}
+                            color="firebrick"
+                            onPress={onClickDelete}
+                        />
+                    </View>
                 </View>
-            </View>
-        </Pressable>
+            </Pressable>
+            <ConfirmDeleteModal
+                item={item}
+                onClose={() => setDeleteModalActive(false)}
+                onConfirm={onDeleteConfirm}
+                isVisible={deleteModalActive}
+            />
+        </>
     );
 };
 
@@ -62,16 +91,19 @@ const styles = StyleSheet.create({
     header: {
         padding: 2,
         backgroundColor: '#f7dbcd',
-        // borderWidth: 1,
-        // borderColor: 'grey',
         textAlign: 'center',
         color: 'black',
     },
     iconContainer: {
         flexDirection: 'row',
+        alignItems: 'center',
+        alignSelf: 'center',
+        alignContent: 'center',
+        justifyContent: 'center',
     },
     icon: {
-        marginLeft: 10,
+        marginLeft: 15,
+        height: '100%',
     },
     listItemView: {
         flexDirection: 'row',
@@ -93,8 +125,7 @@ const styles = StyleSheet.create({
         opacity: 0.5,
     },
     pressed: {
-        opacity: 0.5,
-        backgroundColor: '#f0efd5',
+        backgroundColor: 'rgba(0,0,0,0.2)',
     },
 });
 

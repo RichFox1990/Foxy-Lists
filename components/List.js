@@ -1,6 +1,12 @@
 import ListItem from './ListItem';
 import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, View, Text, TouchableWithoutFeedback } from 'react-native';
+import {
+    StyleSheet,
+    View,
+    Text,
+    TouchableWithoutFeedback,
+    ActivityIndicator,
+} from 'react-native';
 import { AppContext } from './DataStore/utils/appContext';
 import { SyncedList } from '@georstat/react-native-synced-list';
 export const List = () => {
@@ -17,57 +23,99 @@ export const List = () => {
                         title: index,
                         data: categoryData.map((data) => ({
                             ...data,
-                            category: index,
                         })),
                     })),
             );
         }
     }, [items]);
 
+    const renderHorizontalItem = (index, isSelected, item) => {
+        return (
+            <View style={styles.horizontalItemWrapper}>
+                <View
+                    style={
+                        isSelected
+                            ? [
+                                  styles.itemContainer,
+                                  styles.itemContainerSelected,
+                              ]
+                            : styles.itemContainer
+                    }>
+                    <Text>{item.title}</Text>
+                </View>
+            </View>
+        );
+    };
+
     const renderSectionHeader = (section) => {
         return (
-            <TouchableWithoutFeedback style={styles.header}>
+            <TouchableWithoutFeedback>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>{section.title}</Text>
                 </View>
             </TouchableWithoutFeedback>
         );
     };
-    return (
-        <>
-            {listData && (
+
+    return listData ? (
+        listData.length ? (
+            <View style={styles.flex}>
                 <SyncedList
                     renderSectionHeader={renderSectionHeader}
+                    renderHorizontalItem={renderHorizontalItem}
                     data={listData}
                     horizontalListContainerStyle={
                         styles.horizontalListContainerStyle
                     }
-                    renderVerticalItem={(itemThing) => {
+                    verticalListProps={{
+                        style: styles.verticalListContainerStyle,
+                    }}
+                    renderVerticalItem={(item) => {
                         return (
                             <ListItem
-                                categoryName={itemThing.category}
-                                item={itemThing}
+                                categoryName={item.category}
+                                item={item}
                             />
                         );
                     }}
                 />
-            )}
-        </>
+            </View>
+        ) : (
+            <Text style={styles.noItemsText}>
+                Add some items to get started...
+            </Text>
+        )
+    ) : (
+        <ActivityIndicator style={styles.loader} size="large" color="#f57b42" />
     );
 };
 const styles = StyleSheet.create({
     flex: { flex: 1 },
     horizontalListContainerStyle: {
-        padding: 10,
+        paddingHorizontal: 10,
     },
+
     header: {
         padding: 2,
         backgroundColor: '#f7dbcd',
-        // borderWidth: 1,
-        // borderColor: 'grey',
     },
     headerText: {
         textAlign: 'center',
         color: 'black',
+    },
+    noItemsText: {
+        textAlign: 'center',
+        color: 'grey',
+        opacity: 0.7,
+    },
+    itemContainer: {
+        paddingHorizontal: 12,
+        paddingVertical: 5,
+        marginBottom: 5,
+    },
+
+    itemContainerSelected: {
+        borderBottomWidth: 2,
+        borderBottomColor: '#f57b42',
     },
 });

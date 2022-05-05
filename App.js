@@ -93,9 +93,9 @@ const App = () => {
                             style={styles.img}
                         />
                     </View>
-                    <AddItemContainer onAdd={handleAdd} />
-                    {itemToEdit && <EditItemModal item={itemToEdit} />}
-                    <List />
+                    <AddItemContainer />
+                    <EditItemModal />
+                    <List items={items} />
                 </View>
             </TouchableWithoutFeedback>
         </SafeAreaView>

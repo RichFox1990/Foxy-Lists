@@ -1,18 +1,17 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { AppContext } from './DataStore/utils/appContext';
 
-const DropDownSelect = ({ data }) => {
+const DropDownSelect = ({ data, flex, onChange, currentValue }) => {
     const [isFocused, setIsFocused] = useState(false);
-    const { selectedCategory, setSelectedCategory } = useContext(AppContext);
 
     return (
         <Dropdown
             style={[
                 styles.dropdown,
                 isFocused ? styles.focusedBorder : styles.defaultBorder,
+                { flex: flex },
             ]}
             placeholderStyle={styles.placeholderStyle}
             selectedTextStyle={styles.selectedTextStyle}
@@ -25,14 +24,10 @@ const DropDownSelect = ({ data }) => {
             valueField="value"
             placeholder="Select Group"
             searchPlaceholder="Search..."
-            value={selectedCategory?.value}
+            value={currentValue?.value}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            onChange={(item) => {
-                item.value === selectedCategory?.value
-                    ? setSelectedCategory(null)
-                    : setSelectedCategory(item);
-            }}
+            onChange={onChange}
             renderRightIcon={() => (
                 <FontAwesome5
                     style={styles.icon}
@@ -58,7 +53,6 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         borderWidth: 2,
         margin: 5,
-        flex: 0.4,
         backgroundColor: '#eee',
     },
     icon: {

@@ -10,21 +10,28 @@ import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
 import DropDownSelect from './DropDownSelect';
 import { AppContext } from './DataStore/utils/appContext';
 
-const AddItemContainer = ({ onAdd }) => {
-    const { categories } = useContext(AppContext);
+const AddItemContainer = () => {
+    const { categories, handleAdd, selectedCategory, setSelectedCategory } =
+        useContext(AppContext);
     const [text, setText] = useState('');
     const [isTextFocused, setIsTextFocused] = useState(false);
 
-    const handleAdd = () => {
+    const onAdd = () => {
         const textValue = text.trim().toLowerCase();
         if (textValue) {
-            onAdd(textValue);
             setText('');
+            handleAdd(textValue);
         }
     };
 
     const handleChange = (textValue) => {
         setText(textValue);
+    };
+
+    const handleCategoryChange = (selection) => {
+        selection?.value === selectedCategory?.value
+            ? setSelectedCategory(null)
+            : setSelectedCategory(selection);
     };
 
     return (
@@ -50,13 +57,17 @@ const AddItemContainer = ({ onAdd }) => {
                         </View>
                     )}
                 </View>
-                <DropDownSelect data={categories} />
-                {/* make this reusable */}
+                <DropDownSelect
+                    data={categories}
+                    flex={0.4}
+                    onChange={handleCategoryChange}
+                    currentValue={selectedCategory}
+                />
             </View>
             <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     style={styles.addButtonContainer}
-                    onPress={handleAdd}>
+                    onPress={onAdd}>
                     <FontAwesome name="plus" size={25} style={styles.icon} />
                     <Text style={styles.buttonText}>Add Item</Text>
                 </TouchableOpacity>
@@ -88,6 +99,9 @@ const styles = StyleSheet.create({
         color: 'grey',
     },
     buttonContainer: { flexDirection: 'row' },
+    // disabledButton: {
+    //     backgroundColor: '#964b27',
+    // },
     addButtonContainer: {
         // borderRadius: 50,
         flex: 1,

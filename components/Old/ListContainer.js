@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { List } from './List';
 
-import lodash from 'lodash';
+import { cloneDeep } from 'lodash';
 import { StyleSheet, ActivityIndicator } from 'react-native';
 import { AppContext } from './DataStore/utils/appContext';
 
@@ -21,8 +21,8 @@ const RecursiveCategoryLists = ({ items, isFirst }) => {
     };
 
     const ListWithFooter = ({ category }) => {
-        const categoryToRender = lodash.cloneDeep(items[category]);
-        const newItems = lodash.cloneDeep(items);
+        const categoryToRender = cloneDeep(items[category]);
+        const newItems = cloneDeep(items);
         delete newItems[category];
 
         return (
