@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Text, StyleSheet, View, Button } from 'react-native';
 import Modal from 'react-native-modal';
+import { ConfirmCancelButtons } from './../ConfirmCancelButtons';
 
 export const ConfirmDeleteModal = ({ onClose, onConfirm, item, isVisible }) => {
     const defaultAnimation = 'zoomOut';
@@ -49,21 +50,7 @@ export const ConfirmDeleteModal = ({ onClose, onConfirm, item, isVisible }) => {
                         </View>
                     );
                 })}
-
-                <View style={styles.buttonContainer}>
-                    <Button
-                        onPress={() => handleOnClose('Confirm')}
-                        title="Confirm"
-                        color="green"
-                        accessibilityLabel="Learn more about this purple button"
-                    />
-                    <Button
-                        onPress={() => handleOnClose('Cancel')}
-                        title="Cancel"
-                        color="red"
-                        accessibilityLabel="Learn more about this purple button"
-                    />
-                </View>
+                <ConfirmCancelButtons onConfirm={() => handleOnClose('Confirm')} onCancel={() => handleOnClose('Cancel')} />
             </View>
         </Modal>
     );
@@ -78,10 +65,12 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         borderBottomWidth: 2,
         borderColor: '#f57b42',
+        color: 'black',
     },
     textItemTitle: {
         textAlign: 'center',
         fontSize: 16,
+        color: 'grey',
     },
     itemTextContainer: {
         flexDirection: 'row',
@@ -93,12 +82,6 @@ const styles = StyleSheet.create({
         fontStyle: 'italic',
         color: 'red',
         fontSize: 16,
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        margin: 10,
-        marginTop: 15,
     },
     modalView: {
         borderRadius: 15,

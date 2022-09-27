@@ -17,14 +17,14 @@ const ListItem = ({ item }) => {
     };
     const onClickDelete = () => {
         if (item.done) {
-            handleDelete(item.id, item.category);
+            handleDelete(item);
         } else {
             setDeleteModalActive(true);
         }
     };
     const onDeleteConfirm = () => {
         setDeleteModalActive(false);
-        handleDelete(item.id, item.category);
+        handleDelete(item);
     };
 
     const onLongPress = () => {

@@ -37,6 +37,15 @@ class DataStore {
         throw new Error('Kappa');
     };
 
+    clearLocalData = async () => {
+        try {
+            await AsyncStorage.clear();
+            console.log('||--- LOCAL DATA CLEARED ---||');
+        } catch {
+            console.log('Error when clearing data');
+        }
+    }
+
     storeDataInCloud = async (path, userId, data) => {
         try {
             await fetch(

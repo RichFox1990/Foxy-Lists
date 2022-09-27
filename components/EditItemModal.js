@@ -3,14 +3,13 @@ import { StyleSheet, Text, View } from 'react-native';
 import { AppContext } from './DataStore/utils/appContext';
 import DropDownSelect from './DropDownSelect';
 import Modal from 'react-native-modal';
+import { ConfirmCancelButtons } from './ConfirmCancelButtons';
 
 const EditItemModal = () => {
-    const { itemToEdit, setItemToEdit, categories } = useContext(AppContext);
+    const { itemToEdit, setItemToEdit, categories, handleEditItem } = useContext(AppContext);
     const [newCategory, setNewCategory] = useState(itemToEdit.category);
 
     useEffect(() => {
-        console.log('current newCategory', newCategory);
-        console.log('current toEditCategory', itemToEdit?.category);
         setNewCategory(itemToEdit.category);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [itemToEdit]);
@@ -33,7 +32,8 @@ const EditItemModal = () => {
                         data={categories}
                         currentValue={newCategory}
                         onChange={handleOnCategoryChange}
-                    />
+                        />
+                    <ConfirmCancelButtons onConfirm={() => handleEditItem(itemToEdit, "category", newCategory)} onCancel={() => setItemToEdit(false)}/>
                 </View>
             </View>
         </Modal>
@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5c6b0',
         borderBottomWidth: 2,
         borderColor: '#f57b42',
+        color: 'black',
     },
     modalContainer: {
         borderRadius: 15,

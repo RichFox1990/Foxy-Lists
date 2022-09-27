@@ -37,6 +37,7 @@ const App = () => {
         const fetchUserData = async () => {
             setTitle('loading...');
             const theData = await dataStore.getData(path, userId);
+            // await dataStore.clearLocalData();
             setTitle('Foxy Lists');
             setItems(theData && Object.keys(theData).length ? theData : {});
         };

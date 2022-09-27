@@ -9,12 +9,12 @@ import {
 import FontAwesome from 'react-native-vector-icons/dist/FontAwesome';
 import DropDownSelect from './DropDownSelect';
 import { AppContext } from './DataStore/utils/appContext';
+import { EnterItemName } from './EnterItemName';
 
 const AddItemContainer = () => {
     const { categories, handleAdd, selectedCategory, setSelectedCategory } =
         useContext(AppContext);
     const [text, setText] = useState('');
-    const [isTextFocused, setIsTextFocused] = useState(false);
 
     const onAdd = () => {
         const textValue = text.trim().toLowerCase();
@@ -37,26 +37,7 @@ const AddItemContainer = () => {
     return (
         <View>
             <View style={styles.enterRow}>
-                <View style={styles.flex}>
-                    <TextInput
-                        numberOfLines={1}
-                        value={text}
-                        style={[
-                            styles.textInput,
-                            isTextFocused
-                                ? styles.focusedBorder
-                                : styles.defaultBorder,
-                        ]}
-                        onChangeText={handleChange}
-                        onFocus={() => setIsTextFocused(true)}
-                        onBlur={() => setIsTextFocused(false)}
-                    />
-                    {Boolean(!text) && (
-                        <View style={styles.placeholder} pointerEvents="none">
-                            <Text style={styles.text}>Enter New Item</Text>
-                        </View>
-                    )}
-                </View>
+                <EnterItemName textValue={text} onChange={handleChange} defaultText="Enter New Item"/>
                 <DropDownSelect
                     data={categories}
                     flex={0.4}

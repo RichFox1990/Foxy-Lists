@@ -34,30 +34,68 @@ export const AppContextProvider = ({ children }) => {
     };
 
     const getCategoryName = (categoryString) => {
-        return categoryString ? categoryString : unassignedCategory.label;
+        return categoryString ? categoryString : unassignedCategory.label; 
     };
 
-    const handleCategoryDelete = (data, id) => {
+    const handleItemDelete = (data, id) => {
         return data.filter((item) => item.id !== id);
     };
 
-    const handleDelete = async (id, category) => {
-        console.log('DELETING--', category, id);
+    const handleDelete = async (item) => {
+        console.log('DELETING--', item.category, item.id);
+        itemCategoryLabel = item.category.label
 
         const newItems = cloneDeep(items);
-        const newCategoryData = handleCategoryDelete(
-            newItems[category.label],
-            id,
+        const newCategoryData = handleItemDelete(
+            newItems[item.category.label],
+            item.id,
         );
         if (newCategoryData.length === 0) {
-            delete newItems[category.label];
+            delete newItems[item.category.label];
         } else {
-            newItems[category.label] = newCategoryData;
+            newItems[item.category.label] = newCategoryData;
         }
 
         setItems(newItems);
         setSyncData(true);
     };
+
+    const handleEditItem = (item, fieldToEdit, newValue) => {
+        let newItems;
+
+        if (fieldToEdit === "category") {
+            newItems = handleChangeCategory(item, newValue)
+        } else {
+            newItems = cloneDeep(items);
+            const indexOfItemToEdit = newItems[item.category.label].findIndex((listItem) => listItem.id === item.id)
+            const ItemToEdit = newItems[item.category.label][indexOfItemToEdit]
+            newItems[item.category.label][indexOfItemToEdit] = {...ItemToEdit, [fieldToEdit]: newValue}
+        }
+
+        setItems(newItems);
+        setSyncData(true);
+        setItemToEdit(false)
+    }
+
+    const handleChangeCategory = (item, newCategory) => {
+        const oldCategory = item.category.label
+        const newItems = cloneDeep(items);
+
+        const indexOfItemToEdit = newItems[oldCategory].findIndex((listItem) => listItem.id === item.id)
+        const [ItemToEdit] = newItems[oldCategory].splice(indexOfItemToEdit, 1)
+        const editedItem = {...ItemToEdit, category: newCategory}
+
+        if (newItems[oldCategory].length === 0) {
+            delete newItems[oldCategory];
+        }
+
+        if (!newItems[newCategory.label] || newItems[newCategory.label].length === 0 ) {
+            newItems[newCategory.label] = [editedItem]
+        } else {
+            newItems[newCategory.label].push(editedItem)
+        }
+        return newItems
+    }
 
     const handleToggleComplete = async (id, category) => {
         console.log('TOGGLING', category, id);
@@ -107,6 +145,7 @@ export const AppContextProvider = ({ children }) => {
             handleAdd,
             handleDelete,
             handleToggleComplete,
+            handleEditItem,
             toggleCloudSyncSwitch,
             items,
             setItems,
@@ -145,6 +184,7 @@ export const AppContextProvider = ({ children }) => {
             handleAdd,
             handleDelete,
             handleToggleComplete,
+            handleEditItem,
         ],
     );
 
